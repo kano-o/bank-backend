@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity as ResponseEntity
 @RequestMapping("/account")
 class RestAccountController {
 
-    @PostMapping
+    @PostMapping("/register")
     fun newAccount(@RequestBody newAccount: Account): ResponseEntity<Any> {
 
         if (newAccount.isInvalid()) {
@@ -23,4 +23,7 @@ class RestAccountController {
         return ResponseEntity<Any>(newAccountNumber, HttpStatus.CREATED)
 
     }
+
+    @PostMapping("/login")
+    fun login(@RequestBody )
 }
