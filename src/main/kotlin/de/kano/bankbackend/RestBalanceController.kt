@@ -46,4 +46,10 @@ class RestBalanceController {
         return ResponseEntity<Any>(newBalance, HttpStatus.OK)
 
     }
+
+    @PostMapping("/transfer")
+    fun transferBalance(@RequestBody input: HashMap<String, String>): ResponseEntity<Any> {
+
+
+    }
 }
