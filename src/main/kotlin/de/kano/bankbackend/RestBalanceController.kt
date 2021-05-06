@@ -50,6 +50,22 @@ class RestBalanceController {
     @PostMapping("/transfer")
     fun transferBalance(@RequestBody input: HashMap<String, String>): ResponseEntity<Any> {
 
+        if (!input.containsKey("withdrawAccountNumber") && !input.containsKey("depositAccountNumber") && !input.containsKey("transfer")) {
+            return ResponseEntity<Any>(HttpStatus.BAD_REQUEST)
+        }
+
+        val withdrawAccountNumber = input["withdrawAccountNumber"]!!.toLong()
+        val depositAccountNumber = input["depositAccountNumber"]!!.toLong()
+        val transfer = input["transfer"]!!.toDouble()
+
+        if (transfer <= 0 && transfer <= checkBalance(withdrawAccountNumber)) {
+            return ResponseEntity<Any>(HttpStatus.BAD_REQUEST)
+        }
+
+        withdrawBalance(withdrawAccountNumber, transfer)
+        depositBalance(depositAccountNumber, transfer)
+
+        return ResponseEntity<Any>(HttpStatus.OK)
 
     }
 }
