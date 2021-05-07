@@ -22,9 +22,9 @@ class RestBalanceController {
             return ResponseEntity<Any>(HttpStatus.BAD_REQUEST)
         }
 
-        val newBalance = depositBalance(accountNumber, deposit)
+        depositBalance(accountNumber, deposit)
 
-        return ResponseEntity<Any>(newBalance, HttpStatus.OK)
+        return ResponseEntity<Any>(HttpStatus.OK)
     }
 
     @PostMapping("/withdrawal")
@@ -41,9 +41,9 @@ class RestBalanceController {
             return ResponseEntity<Any>(HttpStatus.BAD_REQUEST)
         }
 
-        val newBalance = withdrawBalance(accountNumber, withdrawal)
+        withdrawBalance(accountNumber, withdrawal)
 
-        return ResponseEntity<Any>(newBalance, HttpStatus.OK)
+        return ResponseEntity<Any>(HttpStatus.OK)
 
     }
 
