@@ -61,8 +61,7 @@ class RestBalanceController {
             return ResponseEntity<Any>(HttpStatus.BAD_REQUEST)
         }
 
-        withdrawBalance(withdrawAccountNumber, transfer)
-        depositBalance(depositAccountNumber, transfer)
+        transferBalance(withdrawAccountNumber, depositAccountNumber, transfer)
 
         return ResponseEntity<Any>(HttpStatus.OK)
     }
