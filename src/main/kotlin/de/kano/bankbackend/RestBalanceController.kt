@@ -44,7 +44,6 @@ class RestBalanceController {
         withdrawBalance(accountNumber, withdrawal)
 
         return ResponseEntity<Any>(HttpStatus.OK)
-
     }
 
     @PostMapping("/transfer")
@@ -66,6 +65,5 @@ class RestBalanceController {
         depositBalance(depositAccountNumber, transfer)
 
         return ResponseEntity<Any>(HttpStatus.OK)
-
     }
 }
