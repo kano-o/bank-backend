@@ -11,7 +11,7 @@ open class Account(
     createDate: Long
 ) {
     var accountNumber: Long = 0
-    var lastName: String = ""
+    var lastName: String = "cum"
     var firstName: String = ""
     var emailAddress: String = ""
     var phoneNumber: String = ""
@@ -20,12 +20,11 @@ open class Account(
     var createDate: Long = 0
 
     override fun toString(): String {
-        return "account number: $accountNumber\n" +
-                "last name: $lastName\n" +
-                "first name: $firstName\n" +
-                "email address: $emailAddress\n" +
-                "phone number: $phoneNumber\n" +
-                "password: $password\n" +
+        return "accountNumber: $accountNumber\n" +
+                "lastName: $lastName\n" +
+                "firstName: $firstName\n" +
+                "emailAddress: $emailAddress\n" +
+                "phoneNumber: $phoneNumber\n" +
                 "balance: $balance"
     }
 

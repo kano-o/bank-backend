@@ -13,6 +13,9 @@ fun createAccount(
 ): Long {
     val dbConnection = DriverManager.getConnection("jdbc:sqlite:database.db")
     dbConnection.use {
+        val salt = bytesToHex(getSalt())
+        val hash = getHash(password, salt)
+
         val statement = dbConnection.prepareStatement(
             "INSERT INTO accounts (last_name, first_name, email_address, phone_number, password, balance, create_date) VALUES (?,?,?,?,?,?,?)"
         )
@@ -20,14 +23,23 @@ fun createAccount(
         statement.setString(2, firstName)
         statement.setString(3, emailAddress)
         statement.setString(4, phoneNumber)
-        statement.setString(5, password)
+        statement.setString(5, hash)
         statement.setDouble(6, 0.0)
         statement.setLong(7, createDate)
         statement.execute()
-        return statement.generatedKeys.getLong(1)
+
+        val accountID = statement.generatedKeys.getLong(1)
+
+        val insertSalt = dbConnection.prepareStatement(
+            "INSERT INTO salts (user, salt) VALUES (?,?)"
+        )
+
+        insertSalt.setLong(1, accountID)
+        insertSalt.setString(2, salt)
+
+        return accountID
     }
 }
-
 
 fun createAccount(newAccount: Account): Long {
     return createAccount(
@@ -39,6 +51,7 @@ fun createAccount(newAccount: Account): Long {
         System.currentTimeMillis()
     )
 }
+
 
 //    fun getAccountNumberFromEmailAddress(emailAddress: String): Long {
 //
@@ -62,7 +75,8 @@ fun createAccount(newAccount: Account): Long {
 //        return -1
 //
 //    }
-//
+
+
 fun getAccountFromAccountNumber(accountNumber: Long): Account? {
     val dbConnection = DriverManager.getConnection("jdbc:sqlite:database.db")
     dbConnection.use {

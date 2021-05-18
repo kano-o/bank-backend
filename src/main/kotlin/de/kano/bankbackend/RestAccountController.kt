@@ -12,16 +12,15 @@ import org.springframework.http.ResponseEntity as ResponseEntity
 class RestAccountController {
 
     @PostMapping("/register")
-    fun newAccount(@RequestBody newAccount: Account): ResponseEntity<Any> {
+    fun newAccount(@RequestBody input: HashMap<String, String>): ResponseEntity<Any> {
 
-        if (newAccount.isInvalid()) {
+        if(!emailIsValid(input["emailAddress"]!!)) {
             return ResponseEntity<Any>(HttpStatus.BAD_REQUEST)
         }
 
-        val newAccountNumber = createAccount(newAccount)
+        val newAccountNumber = createAccount(input["lastName"]!!, input["firstName"]!!, input["emailAddress"]!!, input["phoneNumber"]!!, input["password"]!!, System.currentTimeMillis())
 
         return ResponseEntity<Any>(newAccountNumber, HttpStatus.CREATED)
-
     }
 
     //@PostMapping("/login")
