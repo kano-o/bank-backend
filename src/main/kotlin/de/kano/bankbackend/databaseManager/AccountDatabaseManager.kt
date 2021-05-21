@@ -1,9 +1,10 @@
 package de.kano.bankbackend.databaseManager
 
 import de.kano.bankbackend.Account
-import de.kano.bankbackend.bytesToHex
-import de.kano.bankbackend.getHash
-import de.kano.bankbackend.getSalt
+import de.kano.bankbackend.utils.bytesToHex
+import de.kano.bankbackend.utils.getHash
+import de.kano.bankbackend.utils.getSalt
+import de.kano.bankbackend.utils.isExpectedPassword
 import java.sql.DriverManager
 
 
@@ -35,38 +36,36 @@ fun createAccount(
 		val accountID = statement.generatedKeys.getLong(1)
 
 		val insertSalt = dbConnection.prepareStatement(
-			"INSERT INTO salts (user, salt) VALUES (?,?)"
+			"INSERT INTO salts (account, salt) VALUES (?,?)"
 		)
 
 		insertSalt.setLong(1, accountID)
 		insertSalt.setString(2, salt)
+		insertSalt.execute()
 
 		return accountID
 	}
 }
 
-//    fun getAccountNumberFromEmailAddress(emailAddress: String): Long {
-//
-//        val dbConnection = DriverManager.getConnection("jdbc:sqlite:database.db")
-//        dbConnection.use {
-//            val getNumberStatement = dbConnection.prepareStatement(
-//                "SELECT account_number FROM accounts WHERE email_address = ?"
-//            )
-//
-//            getNumberStatement.setString(1, emailAddress)
-//            getNumberStatement.execute()
-//
-//            val accountNumberResultSet = getNumberStatement.resultSet
-//
-//            if (accountNumberResultSet.next()) {
-//                return accountNumberResultSet.getLong("account_number")
-//            }
-//
-//        }
-//
-//        return -1
-//
-//    }
+fun getAccountNumberFromEmailAddress(emailAddress: String): Long {
+
+	val dbConnection = DriverManager.getConnection("jdbc:sqlite:database.db")
+	dbConnection.use {
+		val getNumberStatement = dbConnection.prepareStatement(
+			"SELECT account_number FROM accounts WHERE email_address = ?"
+		)
+
+		getNumberStatement.setString(1, emailAddress)
+		getNumberStatement.execute()
+
+		val accountNumberResultSet = getNumberStatement.resultSet
+
+		if (accountNumberResultSet.next()) {
+			return accountNumberResultSet.getLong("account_number")
+		}
+	}
+	return -1
+}
 
 
 fun getAccountFromAccountNumber(accountNumber: Long): Account? {
@@ -93,7 +92,30 @@ fun getAccountFromAccountNumber(accountNumber: Long): Account? {
 			accountResultSet.getString("phone_number"),
 			accountResultSet.getDouble("balance"),
 			accountResultSet.getLong("create_date")
-
 		)
+	}
+}
+
+fun passwordMatches(accountNumber: Long, password: String): Boolean {
+	val dbConnection = DriverManager.getConnection("jdbc:sqlite:database.db")
+	dbConnection.use {
+		val getPasswordStatement = dbConnection.prepareStatement(
+			"SELECT password FROM accounts WHERE account_number = ?;"
+		)
+		getPasswordStatement.setLong(1, accountNumber)
+		getPasswordStatement.execute()
+
+		val getSaltStatement = dbConnection.prepareStatement(
+			"SELECT salt FROM salts WHERE account = ?"
+		)
+		getSaltStatement.setLong(1, accountNumber)
+		getSaltStatement.execute()
+
+		val getPasswordResultSet = getPasswordStatement.resultSet
+		val getSaltResultSet = getSaltStatement.resultSet
+		val passwordHashed = getPasswordResultSet.getString("password")
+		val salt = getSaltResultSet.getString("salt")
+
+		return isExpectedPassword(password, salt, passwordHashed)
 	}
 }

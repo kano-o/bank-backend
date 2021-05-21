@@ -2,7 +2,7 @@ package de.kano.bankbackend.restController
 
 import de.kano.bankbackend.databaseManager.createAccount
 import de.kano.bankbackend.emailIsValid
-import de.kano.bankbackend.passwordIsValid
+import de.kano.bankbackend.utils.passwordIsValid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping

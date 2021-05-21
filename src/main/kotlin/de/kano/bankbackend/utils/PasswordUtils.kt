@@ -1,4 +1,4 @@
-package de.kano.bankbackend
+package de.kano.bankbackend.utils
 
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest

@@ -1396,7 +1396,7 @@
       <ColNames>phone_number</ColNames>
       <UnderlyingIndexName>sqlite_autoindex_accounts_2</UnderlyingIndexName>
     </key>
-    <column id="506" parent="171" name="user">
+    <column id="506" parent="171" name="account">
       <Position>1</Position>
       <DataType>INTEGER|0s</DataType>
     </column>
@@ -1405,7 +1405,7 @@
       <DataType>TEXT|0s</DataType>
     </column>
     <foreign-key id="508" parent="171">
-      <ColNames>user</ColNames>
+      <ColNames>account</ColNames>
       <RefTableName>accounts</RefTableName>
       <RefColNames>account_number</RefColNames>
     </foreign-key>
