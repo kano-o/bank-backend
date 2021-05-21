@@ -58,7 +58,7 @@ class DatabaseTokenStore : Tokenstore {
 				"INSERT INTO tokens (account_id, token, valid_until) VALUES (?, ?, ?)"
 			)
 
-			val newToken: String = TokenUtils.generateToken()
+			val newToken: String = generateToken()
 			newTokenStatment.setLong(1, accountId)
 			newTokenStatment.setString(2, newToken)
 			newTokenStatment.setLong(3, System.currentTimeMillis() + VALID_DURATION)
