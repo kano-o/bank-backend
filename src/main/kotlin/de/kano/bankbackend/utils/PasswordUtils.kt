@@ -13,8 +13,8 @@ fun getSalt(): ByteArray {
 	return bytes
 }
 
-fun isValidPassword(password: String): Boolean {
-	return password.length >= 10 //more constraints follow (like must contain special chars etc.)
+fun passwordIsValid(password: String): Boolean {
+	return password.length >= 7 //more constraints follow (like must contain special chars etc.)
 }
 
 @Throws(NoSuchAlgorithmException::class)

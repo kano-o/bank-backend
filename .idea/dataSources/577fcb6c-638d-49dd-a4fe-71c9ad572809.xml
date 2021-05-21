@@ -1437,7 +1437,7 @@
       <Position>2</Position>
       <DataType>STRING|0s</DataType>
     </column>
-    <column id="516" parent="173" name="created_at">
+    <column id="516" parent="173" name="valid_until">
       <Position>3</Position>
       <DataType>INTEGER|0s</DataType>
     </column>
