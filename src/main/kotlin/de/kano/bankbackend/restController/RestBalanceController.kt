@@ -1,19 +1,23 @@
 package de.kano.bankbackend.restController
 
 import de.kano.bankbackend.checkBalance
+import de.kano.bankbackend.security.tokens.DatabaseTokenStore
+import de.kano.bankbackend.security.tokens.Tokenstore
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+
 
 @RestController
 @RequestMapping("/balance")
 class RestBalanceController {
+	var tokenStore: Tokenstore = DatabaseTokenStore()
 
 	@PostMapping("/deposit")
-	fun depositBalance(@RequestBody input: HashMap<String, String>): ResponseEntity<Any> {
+	fun depositBalance(@RequestHeader (value = "Token") token: String, @RequestBody input: HashMap<String, String>): ResponseEntity<Any> {
+		if (!tokenStore.tokenIsValid(token)) {
+			return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
+		}
 
 		if (!input.containsKey("deposit") && !input.containsKey("accountNumber")) {
 			return ResponseEntity<Any>(HttpStatus.BAD_REQUEST)
@@ -32,7 +36,10 @@ class RestBalanceController {
 	}
 
 	@PostMapping("/withdrawal")
-	fun withdrawBalance(@RequestBody input: HashMap<String, String>): ResponseEntity<Any> {
+	fun withdrawBalance(@RequestHeader (value = "Token") token: String, @RequestBody input: HashMap<String, String>): ResponseEntity<Any> {
+		if (!tokenStore.tokenIsValid(token)) {
+			return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
+		}
 
 		if (!input.containsKey("withdrawal") && !input.containsKey("accountNumber")) {
 			return ResponseEntity<Any>(HttpStatus.BAD_REQUEST)
@@ -51,7 +58,10 @@ class RestBalanceController {
 	}
 
 	@PostMapping("/transfer")
-	fun transferBalance(@RequestBody input: HashMap<String, String>): ResponseEntity<Any> {
+	fun transferBalance(@RequestHeader (value = "Token") token: String, @RequestBody input: HashMap<String, String>): ResponseEntity<Any> {
+		if (!tokenStore.tokenIsValid(token)) {
+			return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
+		}
 
 		if (!input.containsKey("transfer") && !input.containsKey("withdrawAccountNumber") && !input.containsKey("depositAccountNumber")) {
 			return ResponseEntity<Any>(HttpStatus.BAD_REQUEST)
