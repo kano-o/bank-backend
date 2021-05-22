@@ -63,6 +63,10 @@ class RestBalanceController {
 			return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
 		}
 
+		if (tokenStore.getAccountNumberByToken(token) != input["withdrawAccountNumber"]!!.toLong()) {
+			return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
+		}
+
 		if (!input.containsKey("transfer") && !input.containsKey("withdrawAccountNumber") && !input.containsKey("depositAccountNumber")) {
 			return ResponseEntity<Any>(HttpStatus.BAD_REQUEST)
 		}

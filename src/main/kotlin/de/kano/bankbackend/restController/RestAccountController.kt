@@ -50,5 +50,4 @@ class RestAccountController {
 
 		return ResponseEntity<Any>(showProfile, HttpStatus.OK)
 	}
-
 }
