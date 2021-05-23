@@ -8,6 +8,6 @@ class BankBackendApplication
 
 
 fun main(args: Array<String>) {
-println("Ur gay")
+	println("Ur gay")
 	runApplication<BankBackendApplication>(*args)
 }
