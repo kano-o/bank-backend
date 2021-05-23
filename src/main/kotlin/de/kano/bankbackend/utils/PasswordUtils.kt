@@ -6,6 +6,9 @@ import java.security.NoSuchAlgorithmException
 import java.security.SecureRandom
 import java.util.*
 
+fun getBase64Salt(): String {
+	return Base64.getEncoder().encodeToString(getSalt())
+}
 
 fun getSalt(): ByteArray {
 	val bytes = ByteArray(16)

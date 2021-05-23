@@ -1,10 +1,7 @@
 package de.kano.bankbackend.databaseManager
 
 import de.kano.bankbackend.Account
-import de.kano.bankbackend.utils.bytesToHex
-import de.kano.bankbackend.utils.getHash
-import de.kano.bankbackend.utils.getSalt
-import de.kano.bankbackend.utils.isExpectedPassword
+import de.kano.bankbackend.utils.*
 import java.sql.DriverManager
 
 
@@ -117,5 +114,27 @@ fun passwordMatches(accountNumber: Long, password: String): Boolean {
 		val salt = getSaltResultSet.getString("salt")
 
 		return isExpectedPassword(password, salt, passwordHashed)
+	}
+}
+
+fun changePassword(accountNumber: Long, newPassword: String) {
+	val dbConnection = DriverManager.getConnection("jdbc:sqlite:database.db")
+	dbConnection.use {
+		val changePasswordStatement = dbConnection.prepareStatement(
+			"UPDATE accounts SET password = ? WHERE account_number = ?"
+		)
+		val changeSaltStatement = dbConnection.prepareStatement(
+			"UPDATE salts SET salt = ? WHERE account = ?"
+		)
+		val newSalt = getBase64Salt()
+		val newHash = getHash(newPassword, newSalt)
+
+		changePasswordStatement.setString(1, newHash)
+		changePasswordStatement.setLong(2, accountNumber)
+		changePasswordStatement.execute()
+
+		changeSaltStatement.setString(1, newSalt)
+		changeSaltStatement.setLong(2, accountNumber)
+		changeSaltStatement.execute()
 	}
 }

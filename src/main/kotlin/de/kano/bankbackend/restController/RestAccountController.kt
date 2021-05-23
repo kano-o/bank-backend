@@ -18,6 +18,15 @@ class RestAccountController {
 	@PostMapping("/register")
 	fun newAccount(@RequestBody input: HashMap<String, String>): ResponseEntity<Any> {
 
+		if (!input.containsKey("lastName") &&
+			!input.containsKey("firstName") &&
+			!input.containsKey("emailAddress") &&
+			!input.containsKey("phoneNumber") &&
+			!input.containsKey("password")
+		) {
+			return ResponseEntity<Any>(HttpStatus.BAD_REQUEST)
+		}
+
 		if (!emailIsValid(input["emailAddress"]!!)) {
 			return ResponseEntity<Any>("Invalid email-address", HttpStatus.BAD_REQUEST)
 		}
@@ -37,6 +46,7 @@ class RestAccountController {
 
 		return ResponseEntity<Any>("New account created \nNr: $newAccountNumber", HttpStatus.CREATED)
 	}
+
 
 	@GetMapping("/profile")
 	fun showProfile(@RequestHeader(value = "Token") token: String): ResponseEntity<Any> {
