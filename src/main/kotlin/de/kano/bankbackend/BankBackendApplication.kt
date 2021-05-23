@@ -4,11 +4,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class BankBackendApplication {
+class BankBackendApplication
 
 
 fun main(args: Array<String>) {
 println("Ur gay")
 	runApplication<BankBackendApplication>(*args)
-}
 }
