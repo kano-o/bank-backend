@@ -5,11 +5,8 @@ import java.sql.DriverManager
 
 
 class DatabaseTokenStore : Tokenstore {
-
-
 	//Days, hours, minutes, seconds, milliseconds
 	private val VALID_DURATION = 14 * 24 * 60 * 60 * 1000
-
 
 	override fun getTokenByAccountNumber(accountId: Long): List<String> {
 		val tokens: MutableList<String> = ArrayList()
@@ -30,7 +27,6 @@ class DatabaseTokenStore : Tokenstore {
 		return tokens
 	}
 
-
 	override fun getTokensByEmail(emailAddress: String): List<String> {
 		val tokens: MutableList<String> = ArrayList()
 
@@ -50,7 +46,6 @@ class DatabaseTokenStore : Tokenstore {
 		}
 	}
 
-
 	override fun createToken(accountId: Long): String {
 		val dbConenction = DriverManager.getConnection("jdbc:sqlite:database.db")
 		dbConenction.use {
@@ -68,7 +63,6 @@ class DatabaseTokenStore : Tokenstore {
 		}
 	}
 
-
 	override fun invalidateToken(token: String) {
 		val dbConnection = DriverManager.getConnection("jdbc:sqlite:database.db")
 		dbConnection.use {
@@ -80,7 +74,6 @@ class DatabaseTokenStore : Tokenstore {
 		}
 	}
 
-
 	override fun invalidateAllAccountTokens(accountId: Long) {
 		val dbConnection = DriverManager.getConnection("jdbc:sqlite:database.db")
 		dbConnection.use {
@@ -91,7 +84,6 @@ class DatabaseTokenStore : Tokenstore {
 			deleteAllTokenStatement.execute()
 		}
 	}
-
 
 	override fun tokenIsValid(token: String): Boolean {
 		val dbConnection = DriverManager.getConnection("jdbc:sqlite:database.db")
@@ -114,7 +106,6 @@ class DatabaseTokenStore : Tokenstore {
 		return false
 	}
 
-
 	override fun getAccountNumberByToken(token: String): Long {
 		val dbConnection = DriverManager.getConnection("jdbc:sqlite:database.db")
 		dbConnection.use {
@@ -131,6 +122,4 @@ class DatabaseTokenStore : Tokenstore {
 		}
 		return -1
 	}
-
-
 }

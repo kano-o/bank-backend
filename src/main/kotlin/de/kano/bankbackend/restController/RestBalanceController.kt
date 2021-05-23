@@ -14,7 +14,10 @@ class RestBalanceController {
 	var tokenStore: Tokenstore = DatabaseTokenStore()
 
 	@PostMapping("/deposit")
-	fun depositBalance(@RequestHeader (value = "Token") token: String, @RequestBody input: HashMap<String, String>): ResponseEntity<Any> {
+	fun depositBalance(
+		@RequestHeader(value = "Token") token: String,
+		@RequestBody input: HashMap<String, String>
+	): ResponseEntity<Any> {
 		if (!tokenStore.tokenIsValid(token)) {
 			return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
 		}
@@ -36,7 +39,10 @@ class RestBalanceController {
 	}
 
 	@PostMapping("/withdrawal")
-	fun withdrawBalance(@RequestHeader (value = "Token") token: String, @RequestBody input: HashMap<String, String>): ResponseEntity<Any> {
+	fun withdrawBalance(
+		@RequestHeader(value = "Token") token: String,
+		@RequestBody input: HashMap<String, String>
+	): ResponseEntity<Any> {
 		if (!tokenStore.tokenIsValid(token)) {
 			return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
 		}
@@ -58,7 +64,10 @@ class RestBalanceController {
 	}
 
 	@PostMapping("/transfer")
-	fun transferBalance(@RequestHeader (value = "Token") token: String, @RequestBody input: HashMap<String, String>): ResponseEntity<Any> {
+	fun transferBalance(
+		@RequestHeader(value = "Token") token: String,
+		@RequestBody input: HashMap<String, String>
+	): ResponseEntity<Any> {
 		if (!tokenStore.tokenIsValid(token)) {
 			return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
 		}
