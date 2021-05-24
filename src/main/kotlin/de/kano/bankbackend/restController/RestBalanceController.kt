@@ -1,6 +1,6 @@
 package de.kano.bankbackend.restController
 
-import de.kano.bankbackend.checkBalance
+import de.kano.bankbackend.databaseManager.checkBalance
 import de.kano.bankbackend.security.tokens.DatabaseTokenStore
 import de.kano.bankbackend.security.tokens.Tokenstore
 import org.springframework.http.HttpStatus
@@ -22,18 +22,18 @@ class RestBalanceController {
 			return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
 		}
 
-		if (!input.containsKey("deposit") && !input.containsKey("accountNumber")) {
+		if (!input.containsKey("deposit")) {
 			return ResponseEntity<Any>(HttpStatus.BAD_REQUEST)
 		}
 
 		val deposit = input["deposit"]!!.toDouble()
-		val accountNumber = input["accountNumber"]!!.toLong()
+		val accountNumber = tokenStore.getAccountNumberByToken(token)
 
 		if (deposit <= 0) {
 			return ResponseEntity<Any>(HttpStatus.BAD_REQUEST)
 		}
 
-		de.kano.bankbackend.depositBalance(accountNumber, deposit)
+		de.kano.bankbackend.databaseManager.depositBalance(accountNumber, deposit)
 
 		return ResponseEntity<Any>("Deposit complete", HttpStatus.OK)
 	}
@@ -47,18 +47,18 @@ class RestBalanceController {
 			return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
 		}
 
-		if (!input.containsKey("withdrawal") && !input.containsKey("accountNumber")) {
+		if (!input.containsKey("withdrawal")) {
 			return ResponseEntity<Any>(HttpStatus.BAD_REQUEST)
 		}
 
 		val withdrawal = input["withdrawal"]!!.toDouble()
-		val accountNumber = input["accountNumber"]!!.toLong()
+		val accountNumber = tokenStore.getAccountNumberByToken(token)
 
 		if (withdrawal <= 0 && withdrawal <= checkBalance(accountNumber)) {
 			return ResponseEntity<Any>(HttpStatus.BAD_REQUEST)
 		}
 
-		de.kano.bankbackend.withdrawBalance(accountNumber, withdrawal)
+		de.kano.bankbackend.databaseManager.withdrawBalance(accountNumber, withdrawal)
 
 		return ResponseEntity<Any>("Withdrawal complete", HttpStatus.OK)
 	}
@@ -72,23 +72,19 @@ class RestBalanceController {
 			return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
 		}
 
-		if (tokenStore.getAccountNumberByToken(token) != input["withdrawAccountNumber"]!!.toLong()) {
-			return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
-		}
-
-		if (!input.containsKey("transfer") && !input.containsKey("withdrawAccountNumber") && !input.containsKey("depositAccountNumber")) {
+		if (!input.containsKey("transfer") && !input.containsKey("depositAccountNumber")) {
 			return ResponseEntity<Any>(HttpStatus.BAD_REQUEST)
 		}
 
 		val transfer = input["transfer"]!!.toDouble()
-		val withdrawAccountNumber = input["withdrawAccountNumber"]!!.toLong()
+		val withdrawAccountNumber = tokenStore.getAccountNumberByToken(token)
 		val depositAccountNumber = input["depositAccountNumber"]!!.toLong()
 
 		if (transfer <= 0 && transfer <= checkBalance(withdrawAccountNumber)) {
 			return ResponseEntity<Any>(HttpStatus.BAD_REQUEST)
 		}
 
-		de.kano.bankbackend.transferBalance(withdrawAccountNumber, depositAccountNumber, transfer)
+		de.kano.bankbackend.databaseManager.transferBalance(withdrawAccountNumber, depositAccountNumber, transfer)
 
 		return ResponseEntity<Any>("Transfer complete", HttpStatus.OK)
 	}

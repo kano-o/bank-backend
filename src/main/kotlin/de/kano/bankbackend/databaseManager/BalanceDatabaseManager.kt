@@ -1,4 +1,4 @@
-package de.kano.bankbackend
+package de.kano.bankbackend.databaseManager
 
 import java.sql.DriverManager
 
