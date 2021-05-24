@@ -17,6 +17,10 @@ class RestSecurityController {
 
 	@PutMapping("/changePassword")
 	fun changePassword(@RequestHeader(value = "Token") token: String, @RequestBody input: HashMap<String, String>): ResponseEntity<Any> {
+		if (!tokenStore.tokenIsValid(token)) {
+			return ResponseEntity<Any>(HttpStatus.UNAUTHORIZED)
+		}
+
 		if (!input.containsKey("emailAddress") && !input.containsKey("oldPassword") && !input.containsKey("newPassword")) {
 			return ResponseEntity<Any>(HttpStatus.BAD_REQUEST)
 		}
