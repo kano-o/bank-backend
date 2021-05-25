@@ -2,6 +2,7 @@ package de.kano.bankbackend.databaseManager
 
 import de.kano.bankbackend.Account
 import de.kano.bankbackend.utils.*
+import java.sql.Driver
 import java.sql.DriverManager
 
 
@@ -136,5 +137,17 @@ fun changePassword(accountNumber: Long, newPassword: String) {
 		changeSaltStatement.setString(1, newSalt)
 		changeSaltStatement.setLong(2, accountNumber)
 		changeSaltStatement.execute()
+	}
+}
+
+fun changeEmail(accountNumber: Long, newEmailAddress: String) {
+	val dbConnection = DriverManager.getConnection("jdbc:sqlite:database.db")
+	dbConnection.use {
+		val changeEmailStatement = dbConnection.prepareStatement(
+			"UPDATE accounts SET email_address = ? WHERE account_number = ?"
+		)
+		changeEmailStatement.setString(1, newEmailAddress)
+		changeEmailStatement.setLong(2, accountNumber)
+		changeEmailStatement.execute()
 	}
 }
