@@ -1,5 +1,7 @@
 package de.kano.bankbackend.restController
 
+import de.kano.bankbackend.databaseManager.checkEmailAddress
+import de.kano.bankbackend.databaseManager.checkPhoneNumber
 import de.kano.bankbackend.databaseManager.createAccount
 import de.kano.bankbackend.databaseManager.getAccountFromAccountNumber
 import de.kano.bankbackend.security.tokens.DatabaseTokenStore
@@ -35,6 +37,14 @@ class RestAccountController {
 			return ResponseEntity<Any>("Invalid password", HttpStatus.BAD_REQUEST)
 		}
 
+		if (checkEmailAddress(input["emailAddress"]!!) == -1) {
+			return ResponseEntity<Any>("Email address is already used", HttpStatus.BAD_REQUEST)
+		}
+
+		if (checkPhoneNumber(input["phoneNumber"]!!) == -1) {
+			return ResponseEntity<Any>("Phone number is already used", HttpStatus.BAD_REQUEST)
+		}
+
 		val newAccountNumber = createAccount(
 			input["lastName"]!!,
 			input["firstName"]!!,
@@ -43,6 +53,10 @@ class RestAccountController {
 			input["password"]!!,
 			System.currentTimeMillis()
 		)
+
+		if (newAccountNumber == -1L) {
+			return ResponseEntity<Any>(HttpStatus.BAD_REQUEST)
+		}
 
 		return ResponseEntity<Any>("New account created \nNr: $newAccountNumber", HttpStatus.CREATED)
 	}

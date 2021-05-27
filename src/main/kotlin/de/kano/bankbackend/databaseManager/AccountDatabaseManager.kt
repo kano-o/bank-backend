@@ -4,6 +4,7 @@ import de.kano.bankbackend.Account
 import de.kano.bankbackend.utils.*
 import java.sql.Driver
 import java.sql.DriverManager
+import kotlin.random.Random
 
 
 fun createAccount(
@@ -19,29 +20,40 @@ fun createAccount(
 		val salt = bytesToHex(getSalt())
 		val hash = getHash(password, salt)
 
-		val statement = dbConnection.prepareStatement(
-			"INSERT INTO accounts (last_name, first_name, email_address, phone_number, password, balance, create_date) VALUES (?,?,?,?,?,?,?)"
-		)
-		statement.setString(1, lastName)
-		statement.setString(2, firstName)
-		statement.setString(3, emailAddress)
-		statement.setString(4, phoneNumber)
-		statement.setString(5, hash)
-		statement.setDouble(6, 0.0)
-		statement.setLong(7, createDate)
-		statement.execute()
+		val randomAccountNumber = Random.nextLong(20000, 50000)
 
-		val accountID = statement.generatedKeys.getLong(1)
+		val checkAccountNumber = dbConnection.prepareStatement(
+			"SELECT COUNT(*) FROM accounts WHERE account_number = ?"
+		)
+		checkAccountNumber.setLong(1, randomAccountNumber)
+		checkAccountNumber.execute()
+
+		if (checkAccountNumber.resultSet.getInt(1) == 1) {
+			return -1
+		}
+
+		val statement = dbConnection.prepareStatement(
+			"INSERT INTO accounts (account_number, last_name, first_name, email_address, phone_number, password, balance, create_date) VALUES (?,?,?,?,?,?,?,?)"
+		)
+		statement.setLong(1, randomAccountNumber)
+		statement.setString(2, lastName)
+		statement.setString(3, firstName)
+		statement.setString(4, emailAddress)
+		statement.setString(5, phoneNumber)
+		statement.setString(6, hash)
+		statement.setDouble(7, 0.0)
+		statement.setLong(8, createDate)
+		statement.execute()
 
 		val insertSalt = dbConnection.prepareStatement(
 			"INSERT INTO salts (account, salt) VALUES (?,?)"
 		)
 
-		insertSalt.setLong(1, accountID)
+		insertSalt.setLong(1, randomAccountNumber)
 		insertSalt.setString(2, salt)
 		insertSalt.execute()
 
-		return accountID
+		return randomAccountNumber
 	}
 }
 
@@ -64,7 +76,6 @@ fun getAccountNumberFromEmailAddress(emailAddress: String): Long {
 	}
 	return -1
 }
-
 
 fun getAccountFromAccountNumber(accountNumber: Long): Account? {
 	val dbConnection = DriverManager.getConnection("jdbc:sqlite:database.db")
@@ -149,5 +160,39 @@ fun changeEmail(accountNumber: Long, newEmailAddress: String) {
 		changeEmailStatement.setString(1, newEmailAddress)
 		changeEmailStatement.setLong(2, accountNumber)
 		changeEmailStatement.execute()
+	}
+}
+
+fun checkEmailAddress(emailAddress: String):Int {
+	val dbConnection = DriverManager.getConnection("jdbc:sqlite:database.db")
+	dbConnection.use {
+		val checkEmailStatement = dbConnection.prepareStatement(
+			"SELECT COUNT(*) FROM accounts WHERE email_address = ?"
+		)
+		checkEmailStatement.setString(1, emailAddress)
+		checkEmailStatement.execute()
+
+		if (checkEmailStatement.resultSet.getInt(1) == 1) {
+			return -1
+		}
+
+		return 1
+	}
+}
+
+fun checkPhoneNumber(phoneNumber: String):Int {
+	val dbConnection = DriverManager.getConnection("jdbc:sqlite:database.db")
+	dbConnection.use {
+		val checkPhoneStatement = dbConnection.prepareStatement(
+			"SELECT COUNT(*) FROM accounts WHERE phone_number = ?"
+		)
+		checkPhoneStatement.setString(1, phoneNumber)
+		checkPhoneStatement.execute()
+
+		if (checkPhoneStatement.resultSet.getInt(1) == 1) {
+			return -1
+		}
+
+		return 1
 	}
 }
