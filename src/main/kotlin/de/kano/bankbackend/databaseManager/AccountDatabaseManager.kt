@@ -109,7 +109,7 @@ fun passwordMatches(accountNumber: Long, password: String): Boolean {
 	val dbConnection = DriverManager.getConnection("jdbc:sqlite:database.db")
 	dbConnection.use {
 		val getPasswordStatement = dbConnection.prepareStatement(
-			"SELECT password FROM accounts WHERE account_number = ?;"
+			"SELECT password FROM accounts WHERE account_number = ?"
 		)
 		getPasswordStatement.setLong(1, accountNumber)
 		getPasswordStatement.execute()
