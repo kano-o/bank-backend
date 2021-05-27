@@ -20,7 +20,7 @@ fun createAccount(
 		val salt = bytesToHex(getSalt())
 		val hash = getHash(password, salt)
 
-		val randomAccountNumber = Random.nextLong(20000, 50000)
+		val randomAccountNumber = Random.nextLong(5000000, 5600000)
 
 		val checkAccountNumber = dbConnection.prepareStatement(
 			"SELECT COUNT(*) FROM accounts WHERE account_number = ?"
