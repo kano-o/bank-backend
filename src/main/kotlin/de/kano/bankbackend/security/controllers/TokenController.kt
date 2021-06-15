@@ -24,6 +24,9 @@ class TokenController {
 		val password = loginDetails["password"]!!
 		try {
 			val accountNumber: Long = getAccountNumberFromEmailAddress(emailAddress)
+			if (accountNumber == -1L) {
+				return ResponseEntity<Any>(HttpStatus.NO_CONTENT)
+			}
 			if (passwordMatches(accountNumber, password)) {
 				val newToken = tokenStore.createToken(accountNumber)
 				return ResponseEntity(newToken, HttpStatus.OK)
