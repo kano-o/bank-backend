@@ -54,7 +54,7 @@ class RestBalanceController {
 		val withdrawal = input["withdrawal"]!!.toDouble()
 		val accountNumber = tokenStore.getAccountNumberByToken(token)
 
-		if (withdrawal <= 0 && withdrawal <= checkBalance(accountNumber)) {
+		if (withdrawal <= 0 || withdrawal > checkBalance(accountNumber)) {
 			return ResponseEntity<Any>(HttpStatus.BAD_REQUEST)
 		}
 
@@ -80,7 +80,7 @@ class RestBalanceController {
 		val withdrawAccountNumber = tokenStore.getAccountNumberByToken(token)
 		val depositAccountNumber = input["depositAccountNumber"]!!.toLong()
 
-		if (transfer <= 0 && transfer <= checkBalance(withdrawAccountNumber)) {
+		if (transfer <= 0 || transfer > checkBalance(withdrawAccountNumber)) {
 			return ResponseEntity<Any>(HttpStatus.BAD_REQUEST)
 		}
 
