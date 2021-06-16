@@ -29,7 +29,7 @@ class RestSecurityController {
 		val accountNumber = tokenStore.getAccountNumberByToken(token)
 
 		if (!passwordMatches(accountNumber, input["oldPassword"]!!)) {
-			return ResponseEntity<Any>("Incorrect Email Address or Password supplied", HttpStatus.FORBIDDEN)
+			return ResponseEntity<Any>("Incorrect Password supplied", HttpStatus.FORBIDDEN)
 		}
 
 		if (!passwordIsValid(input["newPassword"]!!)) {
